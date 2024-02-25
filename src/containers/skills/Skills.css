@@ -1,0 +1,131 @@
+.main {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.skills-main-div {
+    display: flex;
+    justify-content: space-evenly;
+    overflow: hidden;
+}
+
+.skills-header {
+    font-size: 60px;
+    line-height: normal;
+    font-family: "Google Sans Regular";
+    text-align: center;
+}
+
+.skills-text {
+    color: black;
+    font-size: 22px;
+    padding-left: 10px;
+}
+
+.skills-text-div {
+    margin-left: 50px;
+    font-family: "Goolge Sans Regular";
+}
+
+.skills-text-div ul {
+    list-style: "✔️";/*""; /* Remove default bullet points */
+
+}
+  
+/* .skills-text-div ul li::before {
+    content: ""; /* Unicode for ⦿ 
+    margin-right: 0.5em; 
+} 
+   */
+.skills-text-div ul li {
+      line-height: 1.5;
+      margin-top: 10px;
+}
+
+.skills-main-div > * {
+    flex: 1;
+    margin-bottom: 30px;
+}
+
+.skills-image-div > * {
+    max-width: 100%;
+    /* height: auto; */
+    margin-top: 60px;
+}
+
+.skills-heading {
+    font-size: 56px;
+    font-weight: 400;
+    font-family: "Google Sans Regular";
+    line-height: normal;
+}
+
+.tele1 {
+    width: 100%;
+    height: 100%;
+}
+
+@media screen and (max-width: 1380px) {
+    .skills-header {
+        font-size: 50px;
+    }
+
+    .skills-heading {
+        font-size: 50px;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    .skills-main-div {
+        flex-direction: column-reverse;
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .skills-header {
+        font-size: 30px;
+    }
+
+    .skills-heading {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .greeting-text-p {
+        font-size: 16px;
+        line-height: normal;
+    }
+
+    .skills-main-div {
+        flex-direction: column;
+    }
+
+    .skills-text-div {
+        margin-left: 0px;
+        margin: 20px;
+    }
+
+    .skills-text {
+        font-size: 16px;
+    }
+
+    .skills-text-subtitle {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .skills-image-div {
+        order: 2;
+    }
+
+    .skills-image-div > * {
+        margin-top: 0px;
+    }
+}
+
+
+
+
+
+

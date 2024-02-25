@@ -1,0 +1,30 @@
+
+.competitive-sites-main-div {
+    width: 40%;
+    margin: 0 auto;
+
+}
+
+.dev-icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 20px;
+    padding-left: 0;
+    list-style: none;
+    font-size: 3rem;
+    margin-top: 0px;
+    text-align: center;
+}
+
+.competitve-sites-inline {
+    /* display: inline-block; */
+    font-family: "Google Sans Regular";
+}
+
+.competitive-sites-inline > span {
+    color: #868e96;
+}
+
+.competitive-sites-inline > span:hover {
+  color: #645beb;
+}

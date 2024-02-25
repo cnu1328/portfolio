@@ -1,0 +1,126 @@
+.greet-main {
+    width: 90%;
+    padding: 20px 10px;
+    margin: 0 auto;
+    margin-top: 1.3rem;
+}
+
+.greeting-main {
+    width: 90%;
+    padding: 20px 10px;
+    margin: 0 auto;
+}
+
+.greeting-main {
+    display: flex;
+}
+
+.greeting-main > * {
+    flex: 1;
+    margin-bottom: 30px;
+}
+
+.button-greeting-div {
+    display: flex;
+    margin-top: 20px;
+}
+
+.greeting-text {
+    font-size: 70px;
+    line-height: 1.1;
+    font-family: "Google Sans Bold";
+}
+
+.greeting-nickname {
+    font-size: 30px;
+    line-height: 0px;
+    font-family: "Google Sans Bold Italic";
+}
+
+.greeting-text-p {
+    font-size: 40px;
+    line-height: 40px;
+    margin-right: 40px;
+    font-family: "Google Sans Medium";
+    text-indent: 50px;
+    
+}
+
+.greeting-image-div > * {
+    max-width: 100%;
+    height: auto;
+}
+
+.tele {
+    width: 115%;
+    height: 100%;
+}
+
+.portoflio-repo-btn-div {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    font-size: 2em; 
+}
+
+/* Media Query */
+
+@media screen and (max-width: 1380px) {
+    .greeting-text {
+        font-size: 50px;
+    }
+
+    .greeting-text-p {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    .greeting-main {
+        display: block;
+    }
+
+    .greet-main {
+        margin-top: 0;
+    }
+
+    .portoflio-repo-btn-div {
+        width: 100%;
+    }
+
+    .greeting-text,
+    .greeting-nickname,
+    .greeting-text-p {
+        text-align: center;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    .button-greeting-div {
+        justify-content: space-around;
+    }
+
+    .greeting-text {
+        font-size: 30px;
+        margin-top: 0px;
+        text-align: center;
+    }
+
+    .greeting-nickname {
+        font-size: 25px;
+        text-align: center;
+    }
+
+    .greeting-text-p {
+        font-size: 16px;
+        margin-right: 0px;
+        line-height: normal;
+        text-align: center;
+    }
+
+    
+}
+
+
+
