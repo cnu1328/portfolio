@@ -12,7 +12,6 @@
 @tailwind utilities;
 
 /* ---------- Design tokens (RGB triplets so Tailwind can apply alpha) ---------- */
-:root,
 :root[data-theme="dark"] {
   --c-bg: 11 17 32;          /* #0B1120 */
   --c-surface: 17 24 39;     /* #111827 */
@@ -28,6 +27,7 @@
   color-scheme: dark;
 }
 
+:root,
 :root[data-theme="light"] {
   --c-bg: 248 250 252;       /* #F8FAFC */
   --c-surface: 255 255 255;

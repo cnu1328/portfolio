@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 const KEY = "theme";
 
 function readInitial() {
-  if (typeof document === "undefined") return "dark";
-  return document.documentElement.getAttribute("data-theme") || "dark";
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.getAttribute("data-theme") || "light";
 }
 
 /** Theme hook: mirrors the pre-paint script in index.html and persists changes. */

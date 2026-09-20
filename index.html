@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,9 +15,9 @@
       // Apply saved/preferred theme before first paint to avoid a flash.
       (function () {
         try {
-          // Dark-first: only an explicit choice switches to light.
+          // Light-first: only an explicit choice switches to dark.
           var saved = localStorage.getItem("theme");
-          document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+          document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
         } catch (e) {}
       })();
     </script>
