@@ -1,78 +1,158 @@
-@font-face {
-  font-family: "Agustina Regular";
-  font-style: normal;
-  font-weight: normal;
-  src: local("Agustina Regular"),
-    url("./assests/fonts/Agustina.woff");
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Design tokens (RGB triplets so Tailwind can apply alpha) ---------- */
+:root,
+:root[data-theme="dark"] {
+  --c-bg: 11 17 32;          /* #0B1120 */
+  --c-surface: 17 24 39;     /* #111827 */
+  --c-surface-2: 26 35 51;   /* #1A2333 */
+  --c-text: 229 231 235;     /* #E5E7EB */
+  --c-muted: 148 163 184;    /* #94A3B8 */
+  --c-accent: 45 212 191;    /* #2DD4BF */
+  --c-amber: 251 191 36;     /* #FBBF24 */
+  --c-line: 255 255 255;
+  --line-alpha: 0.08;
+  --grid-alpha: 0.05;
+  --glow-alpha: 0.18;
+  color-scheme: dark;
 }
 
-@font-face {
-  font-family: "Montserrat";
-  src: local("Montserrat"),
-    url("./assests/fonts/Montserrat-Regular.ttf") format("woff");
+:root[data-theme="light"] {
+  --c-bg: 248 250 252;       /* #F8FAFC */
+  --c-surface: 255 255 255;
+  --c-surface-2: 241 245 249; /* #F1F5F9 */
+  --c-text: 15 23 42;        /* #0F172A */
+  --c-muted: 71 85 105;      /* #475569 */
+  --c-accent: 13 148 136;    /* #0D9488 */
+  --c-amber: 217 119 6;      /* #D97706 */
+  --c-line: 15 23 42;
+  --line-alpha: 0.08;
+  --grid-alpha: 0.07;
+  --glow-alpha: 0.12;
+  color-scheme: light;
 }
 
-@font-face {
-  font-family: "Google Sans Bold";
-  src: local("Google Sans Bold"),
-    url("./assests/fonts/GoogleSans-Bold.ttf") format("woff");
-}
-
-@font-face {
-  font-family: "Google Sans Bold Italic";
-  src: local("Google Sans Bold Italic"),
-    url("./assests/fonts/GoogleSans-BoldItalic.ttf") format("woff");
-}
-@font-face {
-  font-family: "Google Sans Italic";
-  src: local("Google Sans Italic"),
-    url("./assests/fonts/GoogleSans-Italic.ttf") format("woff");
-}
-
-@font-face {
-  font-family: "Google Sans Medium";
-  src: local("Google Sans Medium"),
-    url("./assests/fonts/GoogleSans-Medium.ttf") format("woff");
-}
-
-@font-face {
-  font-family: "Google Sans Medium Italic";
-  src: local("Google Sans Medium Italic"),
-    url("./assests/fonts/GoogleSans-MediumItalic.ttf") format("woff");
-}
-
-@font-face {
-  font-family: "Google Sans Regular";
-  src: local("Google Sans Regular"),
-    url("./assests/fonts/GoogleSans-Regular.ttf") format("woff");
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-html,
-body {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font: 19px / 23px Montserrat, "Montserrat", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Media Query */
-@media (max-width: 1380px) {
-  html,
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
-    font-size: 16px;
-    line-height: normal;
+    @apply bg-bg text-ink font-sans antialiased;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: rgb(var(--c-accent) / 0.35);
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-accent));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply py-20 sm:py-24 lg:py-28;
+  }
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.2em] text-accent;
+  }
+  .hairline {
+    border-color: rgb(var(--c-line) / var(--line-alpha));
+  }
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--c-surface) / 0.85),
+      rgb(var(--c-surface-2) / 0.65)
+    );
+    border: 1px solid rgb(var(--c-line) / var(--line-alpha));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .glass-hover {
+    @apply transition-all duration-300;
+  }
+  .glass-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 1px rgb(var(--c-accent) / 0.4),
+      0 24px 60px -24px rgb(var(--c-accent) / 0.45);
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-bg hover:brightness-110 hover:shadow-glow;
+  }
+  .btn-ghost {
+    @apply btn text-ink;
+    border: 1px solid rgb(var(--c-line) / calc(var(--line-alpha) * 2));
+  }
+  .btn-ghost:hover {
+    border-color: rgb(var(--c-accent) / 0.6);
+    color: rgb(var(--c-accent));
+  }
+  .tag {
+    @apply inline-flex items-center rounded-md px-2 py-0.5 font-mono text-[11px] leading-5;
+    background: rgb(var(--c-accent) / 0.1);
+    color: rgb(var(--c-accent));
+    border: 1px solid rgb(var(--c-accent) / 0.2);
+  }
+  .tag-neutral {
+    @apply inline-flex items-center rounded-md px-2 py-0.5 font-mono text-[11px] leading-5 text-muted;
+    background: rgb(var(--c-line) / 0.05);
+    border: 1px solid rgb(var(--c-line) / var(--line-alpha));
+  }
+  .prose-portfolio p + p {
+    @apply mt-4;
+  }
+}
 
+/* ---------- Background: dot grid + contour lines + glow ---------- */
+.bg-grid {
+  background-image: radial-gradient(
+    rgb(var(--c-text) / var(--grid-alpha)) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.35) 60%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.35) 60%, transparent);
+}
+.bg-glow {
+  background: radial-gradient(
+    60% 50% at 70% 10%,
+    rgb(var(--c-accent) / var(--glow-alpha)) 0%,
+    transparent 70%
+  );
+}
 
-
+/* ---------- Compare slider ---------- */
+.compare-handle {
+  touch-action: none;
+}

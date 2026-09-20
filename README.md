@@ -1,57 +1,57 @@
+# Srinivas Dharpally — Portfolio
 
-# Sections 📚
+Personal site: **https://portfolio-cnu1328.netlify.app**
 
-✔️ Summary and About me\
-✔️ Skills \
-✔️ Experience\
-✔️ Certifications 🏆\
-✔️ Education\
-✔️ Contact me
+AI/ML Engineer · Geospatial CV & LiDAR · Full-Stack. Case studies for production
+computer-vision pipelines on drone, satellite and LiDAR data, and the GIS
+platforms that serve them.
 
-To view a live example, **[click here](https://shouryagupta.me/)**
+## Stack
 
-# Clone And Use 📋
+Vite · React 18 · Tailwind CSS · Framer Motion · React Router · react-helmet-async
 
-- The website is completely built on `react-js` library of `javascript` and that's why we need `nodejs` and `npm` installed.
-- While installing `nodejs` and `npm`, try to install versions which are equal or greater than the versions mentioned in badges above.
-- In case you want to help developing it or simply saving it, you can fork the repository just by clicking the button on the top-right corner of this page.
-- After the successful installation of `nodejs` and `npm`, clone the repository into your local system using below command:
-  - ```bash
-     git clone https://github.com/cnu1328/portfolio.git
-    ```
-  - This will clone the whole repository in your system.
-- To download required dependencies to your system, navigate to the directory where the cloned repository resides and execute following command:
-  - ```node
-    npm install
-    ```
-- Now, the project is ready to use.
-- You can check it using `npm start`, it will open the website locally on your browser.
+No CDN dependencies — fonts are self-hosted via `@fontsource`.
 
-# Customize it to make your own portfolio ✏️
+## Develop
 
-In this project, there are basically 4 things that you need to change to customize this to anyone else's portfolio: **package.json**, **Personal Information**, **Github Information** and **Splash Logo**.
-
-### package.json
-
-Open this file, which is in the main cloned directory, choose any "name" and change "homepage " to `https://<your-github-username>.github.io`. Do not forget the `https://`, otherwise fonts will not load.
-
-### Personal Information
-
-You will find `src/portfolio.js` file which contains the complete information about the user. The file looks something like below:
-
-```javascript
-// Home Page
-const greeting = {
-    ...
-}
-
-// Social Media
-const socialMediaLinks = {
-    ...
-}
-
-...
+```bash
+nvm use            # Node 22 (see .nvmrc)
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # -> dist/
+npm run preview
 ```
 
-You can change the personal information, experience, education, social media, certifications, blog information, contact information etc. in `src/portfolio.js` to directly reflect them in portfolio website.
+## Editing content
 
+All copy lives in `src/data/` — components never hard-code text.
+
+| File | What it drives |
+|---|---|
+| `profile.js` | Name, headline, typed roles, tagline, links, email |
+| `stats.js` | Impact strip on the home page |
+| `pillars.js` | "What I do" cards |
+| `caseStudies.js` | Featured Work cards **and** every `/work/:slug` page |
+| `experience.js` | Timeline |
+| `skills.js` | Skill groups (icon names are `react-icons/si` exports) |
+| `sideProjects.js`, `education.js` | Side projects, education, certifications |
+
+Set `featured: true` on a case study to show it in the main grid; everything
+else appears under "More work". Add gallery pairs as `{ before, after, caption }`
+to get a drag-to-compare slider.
+
+## Images
+
+Model-output images are WebP files in `public/images/work/`. To regenerate from
+source PNGs:
+
+```bash
+npm run images -- ../cnu1328/doc_images
+```
+
+Put the compiled resume at `public/resume.pdf` — the "Resume" buttons link there.
+
+## Deploy
+
+Netlify builds from `main` with `netlify.toml` (`npm run build`, publish `dist`).
+`public/_redirects` handles client-side routing.

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0B1120" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)" />
+    <title>Srinivas Dharpally — AI/ML Engineer · Geospatial CV & LiDAR · Full-Stack</title>
+    <meta
+      name="description"
+      content="AI/ML engineer building production computer-vision pipelines on drone, satellite and LiDAR data, and the full-stack GIS platforms that serve them."
+    />
+    <script>
+      // Apply saved/preferred theme before first paint to avoid a flash.
+      (function () {
+        try {
+          // Dark-first: only an explicit choice switches to light.
+          var saved = localStorage.getItem("theme");
+          document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
