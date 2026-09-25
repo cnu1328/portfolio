@@ -10,100 +10,186 @@ export const caseStudies = [
     featured: true,
     category: "LiDAR · 3D Deep Learning",
     title: "Railway Asset Extraction from LiDAR",
-    subtitle: "Design vs As-Is: turning raw point clouds into track geometry",
-    role: "Team Lead · End-to-end technical ownership",
-    org: "VassarDigital.ai · R&D",
+    subtitle: "Design vs As-Is: turning raw point clouds into Railway Assest geometry",
+    role: "Technical Lead · End-to-end technical ownership",
+    org: "VassarDigital.ai · R&D Engineer",
     period: "2026",
-    cover: null,
+    cover: img("lidar_predicted_multiclass"),
     accent: "#2DD4BF",
-    summary:
-      "Led R&D for a solution that reads railway LiDAR point clouds, classifies rails, poles and cables with deep learning, and converts the result into track centrelines, individual rails and typed track geometry that can be compared against the design.",
-    problem:
-      "Railway operators need to compare the as-built yard against the design drawing. The as-built exists only as dense, unlabeled LiDAR point clouds. Extracting rails, poles and cables by hand is slow and inconsistent, and off-the-shelf tools do not produce railway-specific geometry.",
+    summary: "Led an **R&D team** in developing an end-to-end railway LiDAR pipeline that uses deep learning models to classify **rails, poles, structures, platforms, bridges, LC gates, and cables**; extracts track centrelines and individual rail geometries; and categorises tracks as main, loop, siding, or turnout for **Design vs. As-Is** comparison.",
+    problem: "Railway **yard planning** needs an accurate comparison between the proposed design and the existing on-ground conditions. However, as-built data is available as dense and unstructured **LiDAR point clouds**, making it difficult and time-consuming to manually identify **rails, poles, structures, platforms, bridges, LC gates, and cables**. General-purpose tools also do not directly provide the railway-specific centrelines, individual rail geometry, and track classifications needed for engineering analysis.",
     approach: [
-      "Studied LiDAR point-cloud data hands-on in CloudCompare — viewing, classification and annotation of railway assets — and built rule-based baselines using planarity, linearity and roughness features.",
-      "Surveyed point-cloud deep-learning literature and implemented PointNet from scratch: point-cloud readers for multiple file types, training loop with loss functions, inference on unseen clouds, and many parameter/architecture iterations.",
-      "Moved to Kernel Point Convolution (KPConv) for better local geometry: implemented the architecture, pre-processing, training and inference pipelines, and iterated experiments to raise per-class accuracy on rails and poles.",
-      "Post-processed predictions into geometry: extracted track centrelines from rail points, split them into individual rails, detected dead-end locations and extracted pole positions.",
-      "Classified every centreline into Main Line, Loop Line, Siding Line or Turnout so the output maps directly onto the design vocabulary.",
+      "Studied **LiDAR point-cloud** data hands-on using **CloudCompare**, including viewing, classification, and annotation of railway assets such as **rails, poles, platforms, structures, bridges, LC gates, and overhead cables**. Built rule-based baselines using planarity, linearity, and roughness features, but these approaches were not reliable enough for consistent railway-asset classification.",
+
+      "Studied **point-cloud deep-learning** approaches and implemented **PointNet & PointNet++** from scratch, including point-cloud readers for multiple file formats, training pipelines with loss functions, inference on unseen point clouds, and multiple parameter and architecture experiments. **PointNet** provides around **47.7% mIoU**, while **PointNet++** improves this to around **55.7% mIoU**",
+
+      "Moved to **Kernel Point Convolution (KPConv)** to better capture local 3D geometry. Implemented the architecture, preprocessing, training, and inference pipelines, and ran multiple experiments to improve per-class accuracy for rails, poles, cables, and other railway assets. **KPConv** has demonstrated **86% mIoU** on the Rail3D data.",
+
+      "Converted model predictions into usable **railway geometry and asset data** by extracting track centrelines from rail points, separating **individual rails, detecting dead-end locations, and extracting the positions of poles, overhead cables, platforms, structures, bridges, LC gates, signals, and other classified railway assets.**",
+
+      "Classified extracted track centrelines as **Main Line, Loop Line, Siding Line, or Turnout** so the results directly match the terminology used in railway yard design and engineering analysis."
     ],
     owned: [
-      "Technical direction and task breakdown for the team",
-      "PointNet & KPConv implementations (data, training, inference)",
-      "Geometry extraction: centrelines, rails, dead-ends, poles",
-      "Track-type classification logic",
+    "Technical direction, architecture, and task breakdown for the R&D team",
+
+    "End-to-end PointNet and KPConv implementation, covering data preparation, training, evaluation, and inference",
+
+    "Railway geometry extraction, including track centrelines, individual rails, dead-end locations, and asset positions",
+
+    "Track classification logic for Main Line, Loop Line, Siding Line, and Turnout"
     ],
     outcomes: [
       { value: "3", label: "Architectures implemented", sub: "PointNet · PointNet++ · KPConv" },
       { value: "4", label: "Track types classified", sub: "main · loop · siding · turnout" },
-      { value: "E2E", label: "Point cloud → geometry", sub: "single pipeline" },
+      { value: "E2E", label: "Point Cloud → Railway Asset Geometry", sub: "classification → extraction → tracks geometry" },
+      { value: "86%", label: "mIoU with KPConv", sub: "railway LiDAR segmentation" },
     ],
-    gallery: [],
+    gallery: [
+      {
+        before: img("lidar_raw_image"),
+        after: img("lidar_predicted_multiclass"),
+        afterLabel: "Multi-Class Prediction",
+        caption: "Raw LiDAR Point Cloud → Multi-Class Railway Asset Classification",
+      },
+      {
+        before: img("lidar_extract_rails_from_predictions"),
+        beforeLabel: "Multi-Class Prediction",
+        after: img("lidar_predicted_rails"),
+        afterLabel: "Extract Rail Class",
+        caption: "Raw LiDAR Point Cloud → Multi-Class Railway Asset Classification",
+      },
+      {
+        before: img("lidar_predicted_rails"),
+        beforeLabel: "Extract Rail Class",
+        after: img("lidar_extracted_centerlines"),
+        afterLabel: "Extracted Track Centerlines",
+        caption: "Raw LiDAR Point Cloud → Multi-Class Railway Asset Classification",
+      },
+      {
+        before: img("lidar_extracted_lines"),
+        beforeLabel: "Extract Rail Class",
+        after: img("lidar_extracked_tracks"),
+        afterLabel: "Extracted Tracks",
+        caption: "Raw LiDAR Point Cloud → Multi-Class Railway Asset Classification",
+      },
+    ],
     stack: ["Python", "PyTorch", "KPConv", "PointNet++", "CloudCompare", "NumPy"],
   },
   {
     slug: "railway-yard-remodelling",
-    featured: false,
-    category: "Railway Engineering · Geometry",
+    featured: true,
+    category: "Railway Engineering · Computation Geometry",
     title: "Yard Remodelling — ESP Generation",
-    subtitle: "Standards-compliant turnout and loop-line geometry, generated",
-    role: "R&D · 100% contribution",
-    org: "VassarDigital.ai · R&D",
+    subtitle: "Computationally designed railway layouts — turnouts, loop lines, new lines & siding lines — complying with IRPWM 2024 & IRSOD 2022",    role: "R&D Engineer · Computational Geometry Engineer",
+    org: "VassarDigital.ai · R&D Engineer",
     period: "2026",
-    cover: null,
+    cover: img("yard_remodelling_laid_turnout"),
     accent: "#FBBF24",
     summary:
-      "Built the railway-geometry engine behind an Engineering Scale Plan (ESP) generator: turnouts, loop lines, sidings and ladders laid out according to Indian Railways IRSOD and IRPWM rules.",
-    problem:
-      "Remodelling a railway yard means re-drawing turnouts, loop lines and sidings under strict geometric rules. Doing this by hand in CAD is slow and error-prone, and every rule change forces a redraw.",
+      "Built the railway-geometry engine behind an **Engineering Scale Plan (ESP)** generator: **turnouts, loop lines, sidings, new lines and ladders** laid out according to **Indian Railways IRSOD** and **IRPWM** rules.",
+    problem: "**Railway yard remodelling** starts with an existing Key Plan that is converted into a digital twin, where users can draw proposed **turnouts, new tracks, loop lines, siding lines and other assets**. The challenge is to automatically generate multiple valid geometric possibilities for each proposed asset while following **IRSOD** and **IRPWM** rules, instead of manually designing and checking every geometry.",
+
     approach: [
-      "Studied and formalised the railway geometry needed for turnouts, loop lines, new tracks, siding lines and ladder arrangements.",
-      "Extracted the relevant IRSOD and IRPWM rules for geometry and layout design into implementable constraints.",
-      "Implemented turnout geometry per IRSOD: switch, lead, crossing and connection assemblies with straight, single-curve and reverse-curve connections.",
-      "Implemented loop-line geometry covering 9 distinct layout cases.",
-      "Next phase planned: new-track and siding-line geometry with validation.",
+      "The existing railway information is extracted from the **Key Plan** and made available as a **digital twin**, where users can draw the proposed yard layout and add assets such as **turnouts, new tracks, loop lines, siding lines, platforms and structures**.",
+
+      "Developed the **Geometry Handlers** that convert each user-drawn asset into multiple geometrically valid design possibilities, forming the **core computational-geometry** layer of the **ESP remodelling** workflow.",
+
+      "Implemented standards-based **turnout geometry**, including switch, lead, crossing and connection assemblies with straight, single-curve and reverse-curve connections, following relevant **IRSOD** and **IRPWM** rules.",
+
+      "Implemented **new-track, loop-line and siding-line geometry handlers**, including the different geometric cases required for railway yard layouts.",
+
+      "Applied **railway geometry constraints** and calculated design metrics such as **cost and penalty scores** for the generated possibilities, allowing the downstream optimisation process to evaluate different alternatives.",
+
+      "The **Geometry Handlers** generate multiple **valid combinations** for each proposed asset. These combinations are then passed to the downstream **CP-SAT** and **recursive backtracking process**, which searches for **collision-free** and **SOD-compliant** combinations across the complete yard.",
+
+      "The final valid combinations are presented to the user for selection before the selected ESP proceeds to SIP generation."
     ],
-    owned: ["Geometry research and rule extraction", "Turnout geometry engine", "Loop-line layout engine (9 cases)"],
+    owned: [
+      "Computational geometry research and railway rule implementation",
+      "Turnout geometry engine with switch, lead, crossing and connection assemblies",
+      "Loop-line, new-track and siding-line geometry engines",
+      "Geometry validation, cost and penalty-score calculations for generated design possibilities",
+    ],
     outcomes: [
-      { value: "9", label: "Loop-line layouts", sub: "parametrically generated" },
-      { value: "3", label: "Connection types", sub: "straight · single-curve · reverse-curve" },
-      { value: "IRSOD", label: "Standards encoded", sub: "+ IRPWM" },
+      { value: "Multi", label: "Loop-line configurations", sub: "multiple layouts from parent loop lines · ladder layouts for constrained yards"},
+      { value: "3", label: "Turnout connection types", sub: "straight · single-curve · reverse-curve" },
+      { value: "IRSOD", label: "Railway standards", sub: "IRPWM 2024 + IRSOD 2022" },
+      { value: "E2E", label: "Geometry generation", sub: "turnouts · loops · new tracks · sidings" },
     ],
-    gallery: [],
-    stack: ["Python", "Computational geometry", "IRSOD", "IRPWM", "CAD-ready output"],
+    gallery: [
+      {
+        image: img("yard_remodelling_digital_twin"),
+        alt: "Railway yard digital twin showing the existing yard layout",
+        caption: "Existing Railway Yard — Digital Twin",
+      },
+      {
+        image: img("yard_remodelling_drawn_turnout"),
+        alt: "User-drawn proposed turnout on the railway yard digital twin",
+        caption: "Proposed Turnout — User Input",
+      },
+      {
+        image: img("yard_remodelling_laid_turnout"),
+        alt: "Generated turnout geometry placed on the proposed railway yard layout",
+        caption: "Turnout Geometry — Generated Layout",
+      },
+    ],
+    stack: ["Python", "Computational geometry", "Railway Geometry Algorithms", "IRSOD 2022", "IRPWM 2024", "CAD-ready output"],
   },
   {
     slug: "unauthorized-cultivation-detection",
     featured: true,
-    category: "Drone CV · Segmentation",
+    category: "Geospatial AI · Drone CV & Segmentation",
     title: "Unauthorized Cultivation Detection",
-    subtitle: "Dual-head UNet++ that outputs one polygon per field",
-    role: "ML Engineer · 100% contribution",
-    org: "AP-CRDA · Drone Compliance Monitoring",
+    subtitle: "UNet++ based semantic segmentation for field and cultivation-boundary extraction",
+    role: "ML Engineer · Geospatial AI",
+    org: "VassarDigital.ai · R&D Engineer",
     period: "2025",
-    cover: img("cultivation_final_output"),
+    cover: img("cultivation_final_output_1"),
     accent: "#84CC16",
     summary:
-      "A PyTorch pipeline that segments cultivated parcels and their boundaries from drone orthomosaics, then applies spatial business rules to flag cultivation on land that should not be farmed.",
+      "An end-to-end **Geospatial AI** pipeline that uses drone orthomosaics to segment cultivated fields and their boundaries, converts predictions into individual **GIS polygons**, and applies spatial business rules to identify cultivation on land that should not be farmed.",
+
     problem:
-      "Land in the capital region that has been acquired must not be cultivated. Field inspection at region scale is impossible; a naïve crop mask merges adjacent fields into one blob, which is useless for parcel-level enforcement.",
+      "Region-scale inspection of cultivated land is difficult to perform manually. Standard **semantic segmentation** can merge adjacent fields into a single region, making it unsuitable for parcel-level enforcement where each cultivated field needs to be identified as an individual **GIS polygon**.",
+
     approach: [
-      "Built the training dataset from drone orthomosaics — tiling, annotation and augmentation.",
-      "Started with two separate models (cultivation interior, parcel boundary) and iterated until accuracy was acceptable.",
-      "Redesigned into a single shared-encoder, dual-decoder UNet++ (ResNet34 encoder) that jointly predicts interiors and boundaries — better accuracy than the two-model approach and one inference pass.",
-      "Post-processing subtracts boundaries from interiors so adjacent fields become separate GIS polygons.",
-      "Spatially clipped predictions against acquisition layers to classify authorised vs unauthorised cultivation, and wrote the APIs that ingest, analyse and display results on the portal.",
+
+      "Built the training dataset from drone orthomosaics, including image tiling, field and boundary annotation, preprocessing, and augmentation.",
+
+      "Started with separate cultivation-interior and parcel-boundary models, then evaluated and iterated on the architecture, training strategy, and parameters to improve segmentation performance.",
+
+      "Designed and implemented a shared-encoder, dual-decoder UNet++ architecture with a ResNet34 encoder that jointly predicts cultivation interiors and field boundaries, improving the results over the initial two-model approach while requiring only a single inference pass.",
+
+      "Developed post-processing logic that uses the predicted boundaries to separate adjacent cultivated regions and convert the segmentation output into individual GIS field polygons.",
+
+      "Integrated the predictions with acquisition and spatial reference layers to classify cultivated fields based on the applicable land-status rules.",
+
+      "Developed the APIs and processing workflow required to ingest drone imagery, run the analysis, generate GIS outputs, and display the results through the geospatial portal.",
+
     ],
-    owned: ["Dataset creation", "Model R&D and iteration", "Dual-head architecture", "Spatial business logic", "Ingest/analysis/display APIs"],
+
+    owned: [
+      "Drone imagery dataset creation and preparation",
+      "UNet++ model research, architecture design and experimentation",
+      "Dual-decoder cultivation and boundary segmentation",
+      "Segmentation post-processing and GIS polygon generation",
+      "Spatial business rules and acquisition-layer analysis",
+      "End-to-end inference, analysis and portal APIs"
+    ],
+
     outcomes: [
+
       { value: "0.86", label: "IoU · cultivation", sub: "Dice 0.92" },
-      { value: "0.72", label: "IoU · boundary", sub: "Dice 0.84" },
-      { value: "1", label: "Polygon per field", sub: "adjacent parcels separated" },
+
+      { value: "0.72", label: "IoU · boundaries", sub: "Dice 0.84" },
+
+      { value: "1", label: "Polygon per field", sub: "adjacent fields separated" },
+
     ],
     gallery: [
-      { before: img("cultivation_raw_image"), after: img("cultivation_agriculture"), caption: "Raw orthomosaic → cultivation mask" },
-      { before: img("cultivation_raw_image"), after: img("cultivation_boundary"), caption: "Raw orthomosaic → parcel boundary head" },
-      { before: img("cultivation_raw_image"), after: img("cultivation_final_output"), caption: "Final output: one polygon per separated field unit" },
+      { before: img("cultivation_raw_image_2"), after: img("cultivation_agriculture_mask"), afterLabel: "Cultivation Mask", caption: "Raw orthomosaic → cultivation mask" },
+      { before: img("cultivation_raw_image_2"), after: img("cultivation_boundary_mask"), afterLabel: "Boundary Mask", caption: "Raw orthomosaic → parcel boundary head" },
+      { before: img("cultivation_raw_image_1"), after: img("cultivation_final_output_1"), afterLabel: "Final Cultivation Parcels", caption: "Final output: one polygon per separated field unit" },
     ],
     stack: ["PyTorch", "UNet++", "segmentation_models_pytorch", "GeoPandas", "Rasterio", "PostGIS", "Django"],
   },
@@ -136,9 +222,9 @@ export const caseStudies = [
       { value: "+h", label: "Height per building", sub: "from DEM" },
     ],
     gallery: [
-      { before: img("building_detection_raw_image"), after: img("building_detection_prob_mask"), caption: "Raw orthomosaic → probability mask" },
-      { before: img("building_detection_raw_image"), after: img("building_detection_polygon_extraction"), caption: "Raw orthomosaic → extracted footprints" },
-      { before: img("building_detection_raw_image"), after: img("building_detection_classified_height"), caption: "Footprints classified by DEM-derived height" },
+      { before: img("building_detection_raw_image"), after: img("building_detection_prob_mask"), afterLabel: "Probability Mask", caption: "Raw orthomosaic → probability mask" },
+      { before: img("building_detection_raw_image"), after: img("building_detection_polygon_extraction"), afterLabel: "Extracted Footprints", caption: "Raw orthomosaic → extracted footprints" },
+      { before: img("building_detection_raw_image"), after: img("building_detection_classified_height"), afterLabel: "Height Classified", caption: "Footprints classified by DEM-derived height" },
     ],
     stack: ["PyTorch", "UNet++", "Rasterio", "Zarr", "GeoPandas", "PostGIS", "Django"],
   },
@@ -170,9 +256,9 @@ export const caseStudies = [
       { value: "SAM3", label: "Text-prompted", sub: "grass excluded via prompts" },
     ],
     gallery: [
-      { before: img("vegetation_raw"), after: img("vegetation_predictions"), caption: "Raw orthomosaic → vegetation predictions" },
-      { before: img("vegetation_raw"), after: img("vegetation_classification"), caption: "Height-classified canopy layers" },
-      { before: img("vegetation_raw"), after: img("vegetation_final_polygons"), caption: "Final GIS polygons" },
+      { before: img("vegetation_raw"), after: img("vegetation_predictions"), afterLabel: "Vegetation Prediction", caption: "Raw orthomosaic → vegetation predictions" },
+      { before: img("vegetation_raw"), after: img("vegetation_classification"), afterLabel: "Canopy Height Layers", caption: "Height-classified canopy layers" },
+      { before: img("vegetation_raw"), after: img("vegetation_final_polygons"), afterLabel: "Final Polygons", caption: "Final GIS polygons" },
     ],
     stack: ["SAM3", "PyTorch", "Rasterio", "DEM / CHM", "GeoPandas", "PostGIS", "Django"],
   },
@@ -204,10 +290,10 @@ export const caseStudies = [
       { value: "KM", label: "Constructed vs planned", sub: "per road" },
     ],
     gallery: [
-      { before: img("road_raw_image"), after: img("road_thar_probabilities"), caption: "Raw orthomosaic → Thar road probabilities" },
-      { before: img("road_raw_image"), after: img("road_cc_roads"), caption: "CC (concrete) road head" },
-      { before: img("road_raw_image"), after: img("road_mud_roads"), caption: "Mud / gravel road head" },
-      { before: img("road_raw_image"), after: img("road_extraction"), caption: "Final multi-class extraction" },
+      { before: img("road_raw_image"), after: img("road_thar_probabilities"), afterLabel: "Thar Road Probability", caption: "Raw orthomosaic → Thar road probabilities" },
+      { before: img("road_raw_image"), after: img("road_cc_roads"), afterLabel: "CC Road Head", caption: "CC (concrete) road head" },
+      { before: img("road_raw_image"), after: img("road_mud_roads"), afterLabel: "Mud/Gravel Road Head", caption: "Mud / gravel road head" },
+      { before: img("road_raw_image"), after: img("road_extraction"), afterLabel: "Final Extraction", caption: "Final multi-class extraction" },
     ],
     stack: ["PyTorch", "UNet++", "SE-ResNet50", "TTA", "GeoPandas", "PostGIS", "Django"],
   },
@@ -239,9 +325,9 @@ export const caseStudies = [
       { value: "State", label: "Inference extent", sub: "full coverage" },
     ],
     gallery: [
-      { before: img("aqua_raw_image"), after: img("aqua_interior_predictions"), caption: "Planet imagery → pond interiors" },
-      { before: img("aqua_raw_image"), after: img("aqua_boudnary_predictions"), caption: "Planet imagery → bund boundaries" },
-      { before: img("aqua_raw_image"), after: img("aqua_final_predictions"), caption: "Final per-pond polygons" },
+      { before: img("aqua_raw_image"), after: img("aqua_interior_predictions"), afterLabel: "Pond Interior", caption: "Planet imagery → pond interiors" },
+      { before: img("aqua_raw_image"), after: img("aqua_boudnary_predictions"), afterLabel: "Bund Boundary", caption: "Planet imagery → bund boundaries" },
+      { before: img("aqua_raw_image"), after: img("aqua_final_predictions"), afterLabel: "Final Polygons", caption: "Final per-pond polygons" },
     ],
     stack: ["PyTorch", "UNet++", "Planet imagery", "Rasterio", "GeoPandas"],
   },
@@ -273,8 +359,8 @@ export const caseStudies = [
       { value: "State", label: "Inference extent", sub: "full coverage" },
     ],
     gallery: [
-      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_predictions"), caption: "Planet imagery → built-up probability" },
-      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_extraced_polygons"), caption: "Extracted built-up polygons" },
+      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_predictions"), afterLabel: "Built-up Probability", caption: "Planet imagery → built-up probability" },
+      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_extraced_polygons"), afterLabel: "Final Polygons", caption: "Extracted built-up polygons" },
     ],
     stack: ["PyTorch", "UNet++", "Planet imagery", "Rasterio", "GeoPandas"],
   },
@@ -314,7 +400,7 @@ export const caseStudies = [
   },
   {
     slug: "spatial-analysis-toolkit",
-    featured: true,
+    featured: false,
     category: "Platform · Spatial analysis",
     title: "Spatial Analysis Toolkit",
     subtitle: "Query, buffer, nearest-neighbour and drawing tools over 520+ layers",

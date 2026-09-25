@@ -1,11 +1,15 @@
+import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { LuArrowLeft, LuArrowRight, LuExternalLink } from "react-icons/lu";
+import { LuArrowLeft, LuArrowRight, LuExternalLink, LuMaximize2 } from "react-icons/lu";
 import Seo from "../components/layout/Seo";
 import Reveal from "../components/ui/Reveal";
 import StatTile from "../components/ui/StatTile";
 import Tag from "../components/ui/Tag";
 import CompareSlider from "../components/ui/CompareSlider";
+import GalleryLightbox from "../components/ui/GalleryLightbox";
+import RichText from "../components/ui/RichText";
 import { adjacentCaseStudies, getCaseStudy } from "../data/caseStudies";
+import { stripBold } from "../lib/utils";
 
 function Block({ eyebrow, title, children }) {
   return (
@@ -23,13 +27,15 @@ function Block({ eyebrow, title, children }) {
 
 export default function CaseStudy() {
   const { slug } = useParams();
+  const [lightbox, setLightbox] = useState(null);
+  useEffect(() => setLightbox(null), [slug]);
   const c = getCaseStudy(slug);
   if (!c) return <Navigate to="/404" replace />;
   const { prev, next } = adjacentCaseStudies(slug);
 
   return (
     <article>
-      <Seo title={c.title} description={c.summary} path={`/work/${c.slug}`} image={c.cover ?? "/og.png"} />
+      <Seo title={c.title} description={stripBold(c.summary)} path={`/work/${c.slug}`} image={c.cover ?? "/og.png"} />
 
       {/* Hero */}
       <header className="relative overflow-hidden">
@@ -68,21 +74,21 @@ export default function CaseStudy() {
       {/* Body */}
       <div className="container-x space-y-16 py-14 sm:py-16">
         <Block eyebrow="Summary">
-          <p className="text-lg leading-relaxed">{c.summary}</p>
+          <p className="text-lg leading-relaxed"><RichText text={c.summary} /></p>
         </Block>
 
         <Block eyebrow="Problem">
-          <p>{c.problem}</p>
+          <p><RichText text={c.problem} /></p>
         </Block>
 
         <Block eyebrow="Approach">
           <ol className="space-y-4">
             {c.approach.map((step, i) => (
               <li key={i} className="flex gap-4">
-                <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-xs text-accent" style={{ background: "rgb(var(--c-accent) / 0.12)" }}>
+                <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-base text-accent" style={{ background: "rgb(var(--c-accent) / 0.12)" }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p>{step}</p>
+                <p><RichText text={step} /></p>
               </li>
             ))}
           </ol>
@@ -109,13 +115,52 @@ export default function CaseStudy() {
         {c.gallery?.length > 0 && (
           <Reveal>
             <p className="eyebrow">Outputs</p>
-            <h2 className="mt-1 text-xl font-semibold">Drag to compare input and prediction.</h2>
+            <h2 className="mt-1 text-xl font-semibold">Project outputs and visual results.</h2>
             <div className="mt-6 grid gap-6 lg:grid-cols-2">
-              {c.gallery.map((g, i) => (
-                <CompareSlider key={i} before={g.before} after={g.after} caption={g.caption} />
-              ))}
+              {c.gallery.map((g, i) =>
+                g.before && g.after ? (
+                  <CompareSlider
+                    key={i}
+                    before={g.before}
+                    after={g.after}
+                    beforeLabel={g.beforeLabel}
+                    afterLabel={g.afterLabel}
+                    caption={g.caption}
+                    onExpand={() => setLightbox(i)}
+                  />
+                ) : (
+                  <figure key={i} className="glass overflow-hidden rounded-2xl">
+                    <button
+                      type="button"
+                      aria-label="Open in gallery"
+                      onClick={() => setLightbox(i)}
+                      className="group relative block w-full cursor-zoom-in overflow-hidden"
+                    >
+                      <img
+                        src={g.image}
+                        alt={g.alt ?? g.caption ?? "Project output"}
+                        className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        loading="lazy"
+                      />
+                      <span className="absolute bottom-3 right-3 inline-flex h-8 w-8 items-center justify-center rounded-md bg-black/60 text-white transition-colors group-hover:bg-black/80">
+                        <LuMaximize2 size={15} />
+                      </span>
+                    </button>
+                    {g.caption && <figcaption className="px-4 py-3 text-sm text-muted">{g.caption}</figcaption>}
+                  </figure>
+                ),
+              )}
             </div>
           </Reveal>
+        )}
+
+        {lightbox !== null && c.gallery?.[lightbox] && (
+          <GalleryLightbox
+            items={c.gallery}
+            index={lightbox}
+            onIndexChange={setLightbox}
+            onClose={() => setLightbox(null)}
+          />
         )}
 
         <Block eyebrow="Stack">

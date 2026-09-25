@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="hairline border-t">
       <div className="container-x flex flex-col items-center justify-between gap-4 py-8 text-sm text-muted sm:flex-row">
         <p>
-          © {year} {profile.name}. Built with React, Tailwind &amp; Framer Motion.
+         © {year} {profile.name}  ·  R&D Engineer
         </p>
         <div className="flex items-center gap-3">
           <a href={`mailto:${profile.email}`} aria-label="Email" className="hover:text-accent"><LuMail size={18} /></a>

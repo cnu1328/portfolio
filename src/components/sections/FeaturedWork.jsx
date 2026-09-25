@@ -3,6 +3,7 @@ import { LuArrowUpRight } from "react-icons/lu";
 import { caseStudies, featuredCaseStudies } from "../../data/caseStudies";
 import SectionHeader from "../ui/SectionHeader";
 import Reveal from "../ui/Reveal";
+import RichText from "../ui/RichText";
 import Tag from "../ui/Tag";
 
 function CoverFallback({ accent }) {
@@ -39,7 +40,7 @@ export function CaseStudyCard({ c, delay = 0 }) {
             <span>{c.title}</span>
             <LuArrowUpRight className="mt-1 shrink-0 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" size={18} />
           </h3>
-          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{c.subtitle}. {c.summary}</p>
+          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{c.subtitle}. <RichText text={c.summary} /></p>
           <div className="mt-4 flex flex-wrap gap-1.5 pt-1">
             {c.stack.slice(0, 4).map((t) => (
               <Tag key={t} neutral>{t}</Tag>
@@ -56,9 +57,9 @@ export default function FeaturedWork() {
   return (
     <section id="work" className="section container-x">
       <SectionHeader
-        eyebrow="Selected work"
-        title="Production systems, not notebooks."
-        lead="Each project runs in production today. Click through for the problem, the approach, what I owned, and the outputs."
+        eyebrow="R&D & Engineering Work"
+        title="From applied R&D to real-world systems"
+        lead="Explore how I turn complex technical problems into practical systems—from research and experimentation to engineering and real-world implementation."
       />
       <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {featuredCaseStudies.map((c, i) => (

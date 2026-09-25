@@ -1,7 +1,7 @@
 /** Fixed page backdrop: dot grid, faint contour lines and a teal glow. */
 export default function Background() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" style={{ right: "var(--scrollbar-lock, 0px)" }}>
       <div className="bg-glow absolute inset-0" />
       <div className="bg-grid absolute inset-0" />
       <svg

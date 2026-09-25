@@ -5,7 +5,7 @@ import { useTypewriter } from "../../lib/useTypewriter";
 import { img } from "../../lib/utils";
 
 const tiles = [
-  { src: img("cultivation_final_output"), label: "Parcel segmentation · dual-head UNet++", span: "col-span-2 row-span-2" },
+  { src: img("lidar_predicted_multiclass"), label: "Multi-class railway asset segmentation · LiDAR point cloud", span: "col-span-2 row-span-2" },
   { src: img("road_extraction"), label: "Multi-class road extraction", span: "col-span-1 row-span-1" },
   { src: img("aqua_final_predictions"), label: "Aquaculture ponds · Planet imagery", span: "col-span-1 row-span-1" },
 ];
@@ -36,7 +36,7 @@ export default function Hero() {
             {typed}
             <span className="ml-0.5 inline-block w-[2px] animate-blink bg-accent align-middle" style={{ height: "1em" }} />
           </motion.p>
-          <motion.p {...fade(0.24)} className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+          <motion.p {...fade(0.24)} className="mt-6 max-w-xl font-display text-base font-medium leading-relaxed text-muted sm:text-lg">
             {profile.tagline}
           </motion.p>
 
@@ -79,7 +79,7 @@ export default function Hero() {
               </figure>
             ))}
           </div>
-          <div className="glass absolute -bottom-4 -left-4 hidden rounded-xl px-4 py-3 sm:block animate-float">
+          <div className="glass absolute -bottom-10 -left-4 hidden rounded-xl px-4 py-3 sm:block animate-float">
             <div className="font-mono text-xs text-muted">now leading</div>
             <div className="text-sm font-medium">LiDAR R&amp;D · PointNet → KPConv</div>
           </div>

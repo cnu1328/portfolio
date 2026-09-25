@@ -18,6 +18,7 @@ export default {
         display: ['"Space Grotesk"', "Inter", "system-ui", "sans-serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        signature: ['"Agustina"', "cursive"],
       },
       boxShadow: {
         glow: "0 0 0 1px rgb(var(--c-accent) / 0.35), 0 20px 60px -20px rgb(var(--c-accent) / 0.35)",
