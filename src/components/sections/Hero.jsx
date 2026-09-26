@@ -6,8 +6,8 @@ import { img } from "../../lib/utils";
 
 const tiles = [
   { src: img("lidar_predicted_multiclass"), label: "Multi-class railway asset segmentation · LiDAR point cloud", span: "col-span-2 row-span-2" },
-  { src: img("road_extraction"), label: "Multi-class road extraction", span: "col-span-1 row-span-1" },
-  { src: img("aqua_final_predictions"), label: "Aquaculture ponds · Planet imagery", span: "col-span-1 row-span-1" },
+  { src: img("building_final_polygons"), label: "Building Footprints · Extraction", span: "col-span-1 row-span-1" },
+  { src: img("road_final_classes"), label: "Multi-class road extraction", span: "col-span-1 row-span-1" },
 ];
 
 export default function Hero() {

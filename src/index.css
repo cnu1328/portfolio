@@ -193,3 +193,67 @@
 .animate-slide-in-left {
   animation: lightbox-slide-left 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* ---------- Testimonials: slow, pausable marquee ---------- */
+@keyframes testimonial-scroll {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.testimonial-marquee {
+  overflow: hidden;
+  padding-block: 0.25rem;
+  mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+}
+
+.testimonial-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: testimonial-scroll 52s linear infinite;
+}
+
+.testimonial-track-group {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+.testimonial-marquee:hover .testimonial-track,
+.testimonial-marquee:focus-within .testimonial-track,
+.testimonial-marquee.is-paused .testimonial-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-motion-control {
+    display: none;
+  }
+
+  .testimonial-marquee {
+    overflow-x: auto;
+    padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .testimonial-marquee::-webkit-scrollbar {
+    display: none;
+  }
+
+  .testimonial-track {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  .testimonial-track-group > blockquote {
+    scroll-snap-align: start;
+  }
+
+  .testimonial-duplicate {
+    display: none;
+  }
+}

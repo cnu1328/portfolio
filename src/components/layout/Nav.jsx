@@ -10,7 +10,16 @@ import { cx } from "../../lib/utils";
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+
+  const navState = (href) => {
+    const [targetPath, targetHash] = href.split("#");
+    const active = pathname === targetPath && (targetHash ? hash === `#${targetHash}` : !hash);
+    return {
+      active,
+      current: active ? (targetHash ? "location" : "page") : undefined,
+    };
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -43,13 +52,23 @@ export default function Nav() {
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((l) => (
-            <li key={l.href}>
-              <a href={l.href} className="rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-ink">
-                {l.label}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((l) => {
+            const { active, current } = navState(l.href);
+            return (
+              <li key={l.href}>
+                <Link
+                  to={l.href}
+                  aria-current={current}
+                  className={cx(
+                    "rounded-full px-3 py-2 text-sm transition-colors hover:text-ink",
+                    active ? "text-accent" : "text-muted",
+                  )}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="hidden items-center gap-2 lg:flex">
@@ -82,16 +101,23 @@ export default function Nav() {
             transition={{ duration: 0.18 }}
             className="glass mx-4 mb-4 rounded-2xl p-2 lg:hidden"
           >
-            {navLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="block rounded-xl px-4 py-3 text-sm text-ink hover:bg-surface-2"
-              >
-                {l.label}
-              </a>
-            ))}
+            {navLinks.map((l) => {
+              const { active, current } = navState(l.href);
+              return (
+                <Link
+                  key={l.href}
+                  to={l.href}
+                  aria-current={current}
+                  onClick={() => setOpen(false)}
+                  className={cx(
+                    "block rounded-xl px-4 py-3 text-sm hover:bg-surface-2",
+                    active ? "bg-surface-2 text-accent" : "text-ink",
+                  )}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
             <a
               href={profile.resumeUrl}
               target="_blank"

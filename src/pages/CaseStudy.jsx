@@ -7,6 +7,7 @@ import StatTile from "../components/ui/StatTile";
 import Tag from "../components/ui/Tag";
 import CompareSlider from "../components/ui/CompareSlider";
 import GalleryLightbox from "../components/ui/GalleryLightbox";
+import CaseStudyModules from "../components/ui/CaseStudyModules";
 import RichText from "../components/ui/RichText";
 import { adjacentCaseStudies, getCaseStudy } from "../data/caseStudies";
 import { stripBold } from "../lib/utils";
@@ -80,6 +81,15 @@ export default function CaseStudy() {
         <Block eyebrow="Problem">
           <p><RichText text={c.problem} /></p>
         </Block>
+
+        {c.modules?.length > 0 && (
+          <CaseStudyModules
+            modules={c.modules}
+            accent={c.accent}
+            title={c.modulesTitle}
+            intro={c.modulesIntro}
+          />
+        )}
 
         <Block eyebrow="Approach">
           <ol className="space-y-4">

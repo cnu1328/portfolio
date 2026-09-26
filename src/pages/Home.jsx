@@ -7,6 +7,7 @@ import Experience from "../components/sections/Experience";
 import Skills from "../components/sections/Skills";
 import SideProjects from "../components/sections/SideProjects";
 import Education from "../components/sections/Education";
+import Testimonials from "../components/sections/Testimonials";
 import Contact from "../components/sections/Contact";
 import { profile } from "../data/profile";
 
@@ -34,6 +35,7 @@ export default function Home() {
       <Skills />
       <SideProjects />
       <Education />
+      <Testimonials />
       <Contact />
     </>
   );

@@ -153,19 +153,12 @@ export const caseStudies = [
       "Region-scale inspection of cultivated land is difficult to perform manually. Standard **semantic segmentation** can merge adjacent fields into a single region, making it unsuitable for parcel-level enforcement where each cultivated field needs to be identified as an individual **GIS polygon**.",
 
     approach: [
-
-      "Built the training dataset from drone orthomosaics, including image tiling, field and boundary annotation, preprocessing, and augmentation.",
-
-      "Started with separate cultivation-interior and parcel-boundary models, then evaluated and iterated on the architecture, training strategy, and parameters to improve segmentation performance.",
-
-      "Designed and implemented a shared-encoder, dual-decoder UNet++ architecture with a ResNet34 encoder that jointly predicts cultivation interiors and field boundaries, improving the results over the initial two-model approach while requiring only a single inference pass.",
-
-      "Developed post-processing logic that uses the predicted boundaries to separate adjacent cultivated regions and convert the segmentation output into individual GIS field polygons.",
-
-      "Integrated the predictions with acquisition and spatial reference layers to classify cultivated fields based on the applicable land-status rules.",
-
+      "Built the training dataset from **3 cm spatial-resolution drone orthomosaics**, including image tiling, field and boundary annotation, preprocessing, and augmentation.",
+      "Started with separate **cultivation-interior** and **parcel-boundary models**, then evaluated and iterated on the architecture, training strategy, and parameters to improve segmentation performance.",
+      "Designed and implemented a **shared-encoder, dual-decoder UNet++ architecture** with a **ResNet34 encoder** that jointly predicts cultivation interiors and field boundaries, improving the results over the initial two-model approach while requiring only a single inference pass.",
+      "Developed **post-processing logic** that uses the predicted boundaries to separate adjacent cultivated regions and convert the segmentation output into individual **GIS field polygons**.",
+      "Integrated the predictions with **land acquisition** and **spatial reference layers** to classify cultivated fields based on the applicable land-status rules.",
       "Developed the APIs and processing workflow required to ingest drone imagery, run the analysis, generate GIS outputs, and display the results through the geospatial portal.",
-
     ],
 
     owned: [
@@ -176,15 +169,11 @@ export const caseStudies = [
       "Spatial business rules and acquisition-layer analysis",
       "End-to-end inference, analysis and portal APIs"
     ],
-
     outcomes: [
-
       { value: "0.86", label: "IoU · cultivation", sub: "Dice 0.92" },
-
       { value: "0.72", label: "IoU · boundaries", sub: "Dice 0.84" },
-
-      { value: "1", label: "Polygon per field", sub: "adjacent fields separated" },
-
+      // { value: "2→1", label: "Models → UNet++", sub: "dual-head single-pass inference" },
+      { value: "E2E",label: "End-to-End Geospatial AI",sub: "drone imagery → prediction → GIS polygons → portal" },
     ],
     gallery: [
       { before: img("cultivation_raw_image_2"), after: img("cultivation_agriculture_mask"), afterLabel: "Cultivation Mask", caption: "Raw orthomosaic → cultivation mask" },
@@ -194,175 +183,294 @@ export const caseStudies = [
     stack: ["PyTorch", "UNet++", "segmentation_models_pytorch", "GeoPandas", "Rasterio", "PostGIS", "Django"],
   },
   {
-    slug: "illegal-construction-detection",
+    slug: "unauthorized-construction-detection",
     featured: true,
-    category: "Drone CV · Segmentation",
-    title: "Illegal Construction Detection",
-    subtitle: "Building footprints at 3 cm GSD, with heights from the DEM",
-    role: "ML Engineer · 100% contribution",
-    org: "AP-CRDA · Drone Compliance Monitoring",
+    category: "Geospatial AI · Drone CV & Large-Scale Raster Processing",
+    title: "Unauthorized Construction Detection",
+    subtitle: "3 cm GSD building detection with large-scale raster inference and DEM-based height extraction",
+    role: "ML Engineer · Geospatial AI",
+    org: "VassarDigital.ai · R&D Engineer",
     period: "2025",
-    cover: img("building_detection_classified_height"),
+    cover: img("building_final_polygons"),
     accent: "#A78BFA",
     summary:
-      "Building-footprint segmentation on high-resolution drone imagery, cleaned into polygons, enriched with height from elevation data, and clipped against zoning to flag unauthorised construction.",
+      "An end-to-end **Geospatial AI pipeline** that detects building footprints from **3 cm GSD drone orthomosaics**, processes large-scale imagery through tile-based inference without loading the full raster into memory, converts predictions into **GIS building polygons**, enriches them with **DEM-derived heights**, and supports downstream identification of unauthorised construction.",
     problem:
-      "Unauthorised construction in a planned capital region has to be caught early. Manual digitisation of every roof across hundreds of square kilometres does not scale, and footprints alone say nothing about how tall a structure is.",
+      "**Detecting unauthorised construction** across large areas requires processing **extremely high-resolution drone imagery** at scale. A single orthomosaic can exceed hundreds of gigabytes, making full-raster inference impractical. The system therefore needs **memory-efficient tile-based processing** while preserving prediction quality, generating clean building footprints, and extracting useful attributes such as building height.",
     approach: [
-      "Created the training dataset from 3 cm GSD orthomosaics and iterated on model R&D until building accuracy was acceptable.",
-      "Trained a UNet++ (ResNet34) segmentation model with a two-stage schedule (frozen encoder → full fine-tune) and mixed precision.",
-      "Blended tiled probability rasters into clean polygon shapefiles; attached height attributes derived from DEM (elevation minus ground).",
-      "Spatially clipped footprints against authorisation layers to separate authorised from unauthorised construction.",
-      "Wrote the APIs that insert, analyse and display detections on the portal.",
+      "Built and trained a **single-head** building-segmentation model using **3 cm GSD drone orthomosaics**, with dataset preparation, tiling, annotation, preprocessing, augmentation, training, and model evaluation.",
+      "Implemented **sliding-window inference** that reads the source orthomosaic in manageable tiles and predicts in batches, avoiding the need to load the complete raster or prediction into RAM.",
+      "Implemented **overlapping tile prediction and Hann-weighted blending**, writing weighted probability sums and weight accumulators to chunked **Zarr** arrays instead of keeping the complete prediction raster in memory.",
+      "Developed block-wise probability merging that reconstructs the final prediction from the Zarr accumulators and writes tiled **BigTIFF** outputs, supporting building rasters larger than 500 GiB.",
+      "Implemented block-wise post-processing to convert building predictions into individual **GIS building footprints**, avoiding memory-intensive processing of the complete raster at once.",
+      "Integrated **DEM-based height extraction** to enrich detected building footprints with height attributes derived from elevation data.",
+      "Built an automation workflow that processes large orthomosaics one at a time, cleans temporary prediction artifacts after successful processing, and preserves intermediate work when failures require recovery.",
+      "Integrated the generated building footprints and attributes with the downstream geospatial workflow for analysis and portal visualization."
     ],
-    owned: ["Dataset creation", "Model R&D", "Polygon + height extraction", "Compliance business logic", "Portal APIs"],
+    owned: [
+      "Building-segmentation dataset creation and model R&D",
+      "Single-head deep-learning inference pipeline",
+      "Large-scale sliding-window and batch inference",
+      "Zarr-based out-of-core probability blending",
+      "Block-wise building polygon extraction",
+      "DEM-based building-height extraction",
+      "Large-raster automation and temporary-artifact management",
+      "Geospatial analysis and portal integration"
+    ],
+
     outcomes: [
       { value: "0.84", label: "IoU · building", sub: "Dice 0.91 · F1 0.88" },
-      { value: "3 cm", label: "Ground sampling distance", sub: "drone orthomosaic" },
-      { value: "+h", label: "Height per building", sub: "from DEM" },
+      { value: "3 cm", label: "Ground sampling distance", sub: "high-resolution drone orthomosaics" },
+      { value: "500+ GB", label: "Large-scale raster processing", sub: "tile-based · out-of-core inference" },
+      { value: "E2E", label: "Drone → GIS pipeline", sub: "prediction · polygons · heights · portal" },
     ],
     gallery: [
-      { before: img("building_detection_raw_image"), after: img("building_detection_prob_mask"), afterLabel: "Probability Mask", caption: "Raw orthomosaic → probability mask" },
-      { before: img("building_detection_raw_image"), after: img("building_detection_polygon_extraction"), afterLabel: "Extracted Footprints", caption: "Raw orthomosaic → extracted footprints" },
-      { before: img("building_detection_raw_image"), after: img("building_detection_classified_height"), afterLabel: "Height Classified", caption: "Footprints classified by DEM-derived height" },
+      { before: img("building_raw_image_1"), after: img("building_prob_mask"), afterLabel: "Probability Mask", caption: "Raw 3 cm GSD orthomosaic → building probability prediction" },
+      { before: img("building_prob_mask"), after: img("building_final_polygons"), afterLabel: "Polygons Extracted", caption: "Building probability → block-wise GIS footprint extraction" },
+      { before: img("building_raw_image"), after: img("building_final_polygons"), afterLabel: "Building Footprints", caption: "Building detection → individual GIS building footprints" },
+      { image: img("building_polygon_height_using_dem"), alt: "Building footprints with DEM-derived height attributes", caption: "Building footprints → DEM-derived building height calculation" },
     ],
-    stack: ["PyTorch", "UNet++", "Rasterio", "Zarr", "GeoPandas", "PostGIS", "Django"],
+    stack: [ "PyTorch", "Deep Learning", "Rasterio", "Zarr", "GeoPandas", "GDAL", "PostGIS", "Django"],
   },
   {
     slug: "green-cover-monitoring",
-    featured: false,
-    category: "Drone CV · Foundation models",
+    featured: true,
+    category: "Geospatial AI · Vision-Language Segmentation",
     title: "Green Cover Monitoring",
-    subtitle: "SAM3 text-prompted segmentation + canopy-height classification",
-    role: "ML Engineer · 100% contribution",
-    org: "AP-CRDA · Drone Compliance Monitoring",
+    subtitle: "SAM3 text-prompted vegetation segmentation + DEM-derived height classification",
+    role: "ML Engineer · Geospatial AI",
+    org: "VassarDigital.ai · R&D Engineer",
     period: "2025",
-    cover: img("vegetation_classification"),
+    cover: img("vegetation_height_classified"),
     accent: "#22C55E",
     summary:
-      "Detects woody green cover (not grass) on drone orthomosaics using SAM3 with text prompts, then classifies it into four height layers with a DEM-derived canopy-height model to locate green hotspots and biodiversity land.",
+      "An end-to-end **Geospatial AI** workflow that uses **SAM3 text-prompted segmentation** to detect vegetation extent from high-resolution drone orthomosaics, then uses a **DEM-derived Canopy Height Model (CHM)** to classify detected vegetation into **grass, bush, small tree, and tall tree** height layers.",
     problem:
-      "Planners need to know where real tree cover is — and how tall it is — to protect biodiversity zones. Fixed-class segmentation models confuse grass with trees and need retraining for every new class.",
+      "**Green-cover monitoring** requires identifying woody vegetation from high-resolution drone imagery while distinguishing it from grass, lawns, pasture, and crops. A fixed-class segmentation model would require learned classes and retraining for new categories, so the workflow uses SAM3 text prompts to identify the vegetation extent and applies deterministic height rules afterward to classify the detected vegetation.",
     approach: [
-      "Built the dataset and ran R&D across approaches until vegetation accuracy was acceptable.",
-      "Used SAM3's semantic predictor with positive/negative text prompts to segment trees and shrubs while excluding grass — no fixed class head to retrain.",
-      "Computed a canopy-height model from the DEM and classified vegetation into grass, bush, small tree and tall tree.",
-      "Spatially clipped results to identify green hotspots and biodiversity lands, and wrote the ingest/analysis/display APIs.",
+      "Built the geospatial inference workflow for RGB and RGB+alpha drone orthomosaics, processing imagery through overlapping 1024 × 1024 windows instead of loading the complete orthomosaic into memory.",
+      "Implemented global 2nd/98th percentile normalization and integrated Ultralytics **SAM3SemanticPredictor** for text-prompted vegetation segmentation.",
+      "Used positive prompts for trees, tree canopies, woody vegetation, shrubs, bushes, and green cover, together with negative prompts for grass, lawns, pasture, and agricultural crops to guide the vegetation segmentation.",
+      "Merged the masks returned from each tile and blended overlapping tile responses to produce a continuous **vegetation probability raster**, followed by thresholding to generate the final vegetation extent.",
+      "Implemented DEM-based **Canopy Height Model (CHM)** generation using elevation minus a local minimum ground estimate, then aligned the vegetation and elevation rasters for per-pixel height classification.",
+      "Applied deterministic height thresholds to classify detected vegetation into four layers: **grass (≤ 0.5 m), bush (0.5–2.5 m), small tree (2.5–7.0 m), and tall tree (≥ 7.0 m)**.",
+      "Converted the classified raster into connected components and generated GIS vegetation-height polygons for downstream spatial analysis.",
+      "Built the training-data preparation workflow, including orthomosaic tiling, vegetation-mask generation, COCO-format dataset export, and integration with the SAM3 fine-tuning workflow for locally trained checkpoints.",
     ],
-    owned: ["Dataset creation", "Model R&D", "CHM height classification", "Hotspot business logic", "Portal APIs"],
+    owned: [
+      "SAM3-based text-prompted vegetation segmentation",
+      "Positive/negative prompt design and inference workflow",
+      "Large orthomosaic tiling, normalization and mask blending",
+      "DEM-derived CHM generation and height classification",
+      "Vegetation raster-to-polygon post-processing",
+      "SAM3 training-data preparation and fine-tuning workflow",
+      "Geospatial analysis and vegetation output generation"
+    ],
     outcomes: [
-      { value: "0.82", label: "IoU · vegetation extent", sub: "Dice 0.90" },
-      { value: "4", label: "Height classes", sub: "grass · bush · small · tall" },
-      { value: "SAM3", label: "Text-prompted", sub: "grass excluded via prompts" },
+      {
+        value: "SAM3",
+        label: "Text-prompted vegetation detection",
+        sub: "positive + negative prompts"
+      },
+      {
+        value: "4",
+        label: "Vegetation height classes",
+        sub: "grass · bush · small tree · tall tree"
+      },
+      {
+        value: "CHM",
+        label: "Height-based classification",
+        sub: "DEM elevation − local ground"
+      },
+      {
+        value: "E2E",
+        label: "Drone → GIS workflow",
+        sub: "segmentation → height layers → polygons"
+      },
     ],
     gallery: [
-      { before: img("vegetation_raw"), after: img("vegetation_predictions"), afterLabel: "Vegetation Prediction", caption: "Raw orthomosaic → vegetation predictions" },
-      { before: img("vegetation_raw"), after: img("vegetation_classification"), afterLabel: "Canopy Height Layers", caption: "Height-classified canopy layers" },
-      { before: img("vegetation_raw"), after: img("vegetation_final_polygons"), afterLabel: "Final Polygons", caption: "Final GIS polygons" },
+      {
+        before: img("vegitation_raw_image"),
+        after: img("vegetation_predictions"),
+        afterLabel: "SAM3 Vegetation Prediction",
+        caption: "Drone orthomosaic → SAM3 text-prompted vegetation extent"
+      },
+      {
+        before: img("vegetation_predictions"),
+        after: img("vegetation_polygon_extraction"),
+        afterLabel: "Vegetation Polygons",
+        caption: "Vegetation prediction → connected components → GIS polygon extraction"
+      },
+      {
+        before: img("vegitation_raw_image"),
+        after: img("vegetation_height_classified"),
+        afterLabel: "Height Classification",
+        caption: "Extracted vegetation polygons → DEM-derived CHM → height classes"
+      },
     ],
-    stack: ["SAM3", "PyTorch", "Rasterio", "DEM / CHM", "GeoPandas", "PostGIS", "Django"],
+    stack: [ "SAM3", "Ultralytics", "PyTorch", "Rasterio", "DEM / CHM", "GeoPandas", "GDAL", "PostGIS", "Django"],
   },
   {
-    slug: "road-network-monitoring",
+    slug: "multi-class-road-detection",
     featured: true,
-    category: "Drone CV · Multi-class",
-    title: "Road Network Monitoring",
-    subtitle: "Triple-head UNet++ for Thar, CC and mud roads",
-    role: "ML Engineer · 100% contribution",
-    org: "AP-CRDA · Drone Compliance Monitoring",
-    period: "2025 – 2026",
-    cover: img("road_extraction"),
-    accent: "#F472B6",
-    summary:
-      "Segments rural road networks from drone imagery and classifies each segment by surface type, then computes constructed vs planned kilometres against the master plan.",
-    problem:
-      "Tracking road construction progress across a capital region needs constructed length per road type, not just 'road / not road'. Thin 1–2 px roads at tile boundaries are easy to lose, and surface classes are visually close.",
+    category: "Geospatial AI · Semantic Segmentation",
+    title: "Multi-Class Road Detection",
+    subtitle: "Three-head UNet++ road segmentation with SE-ResNet50 encoding and GIS polygon extraction",
+    role: "ML Engineer · Geospatial AI",
+    org: "VassarDigital.ai · R&D Engineer",
+    period: "2025",
+    cover: img("road_final_classes"),
+    accent: "#F59E0B",
+    summary: "An end-to-end **Geospatial AI** workflow for detecting and classifying rural road networks from **high-resolution drone orthomosaics**. The system uses a **UNet++ model** with an ImageNet-pretrained **SE-ResNet50 encoder** and **three independent output heads for Thar, cement-concrete, and mud roads**, followed by multiclass decoding and **GIS polygon** generation.",
+    problem: "Road mapping from high-resolution drone imagery requires both detecting narrow road surfaces and distinguishing different road types. **Thar, cement-concrete, and mud roads** can have similar visual characteristics, while road pixels are sparse compared with the surrounding imagery. The workflow therefore uses class-specific supervision, imbalance handling, tiled inference, test-time augmentation, and spatial blending.",
     approach: [
-      "Built the dataset and shipped a single-class road model first; wrote the spatial logic that extracts constructed vs planned KM and the portal APIs.",
-      "Extended to a triple-head UNet++ (SE-ResNet50 encoder, SCSE attention) with three independent binary heads — Thar, CC, Mud/Gravel — decoded with argmax + confidence threshold.",
-      "Trained with pos-weighted BCE + Dice, two-stage schedule, and d4 test-time augmentation at inference.",
-      "Exported multi-class rasters to polygon shapefiles with a road_type attribute.",
+      "Built the training pipeline from drone orthomosaics and road shapefiles containing road-type labels, converting Thar, cement-concrete, and mud-road geometries into separate binary training masks.",
+      "Prepared overlapping **512 × 512 RGB tiles** with robust percentile normalization, valid-image filtering, and background sampling to handle large orthomosaics and sparse road pixels.",
+      "Implemented a **three-head UNet++ model** with an **ImageNet-pretrained SE-ResNet50 encoder**, independently predicting **Thar, cement-concrete, and mud roads**.",
+      "Used **BCE + Dice loss** with automatically calculated class weights to handle severe road-pixel imbalance, followed by a two-stage **frozen-encoder** and **full-network fine-tuning** strategy.",
+      "Implemented overlapping full-orthomosaic inference with **D4 test-time augmentation** and **Hann-weighted blending** to produce continuous road predictions.",
+      "Decoded the three independent predictions into a single multiclass road raster using confidence-gated argmax classification, then polygonized and cleaned the results into GIS-ready road geometries with road_type attributes.",
+      "Built batch automation for processing multiple orthomosaics and generating class rasters, probability outputs, and final road polygons."
     ],
-    owned: ["Dataset creation", "Single-class → multi-class model R&D", "Constructed/planned KM logic", "Portal APIs"],
+    owned: [
+      "Three-head UNet++ road-segmentation architecture",
+      "SE-ResNet50 transfer learning and two-stage training",
+      "Road annotation processing and mask generation",
+      "Class-imbalance handling and weighted BCE + Dice loss",
+      "Drone orthomosaic tiling and normalization",
+      "D4 test-time augmentation and Hann-weighted blending",
+      "Multiclass decoding and GIS road extraction",
+      "Batch inference and raster-to-vector automation"
+    ],
     outcomes: [
-      { value: "0.78", label: "Mean IoU", sub: "Thar 0.78 · CC 0.81 · Mud 0.74" },
-      { value: "3", label: "Road classes", sub: "independent heads" },
-      { value: "KM", label: "Constructed vs planned", sub: "per road" },
+      { value: "UNet++", label: "Road-segmentation architecture", sub: "SE-ResNet50 · ImageNet initialization" },
+      { value: "3", label: "Independent road outputs", sub: "Thar · cement concrete · mud" },
+      { value: "D4", label: "Test-time augmentation", sub: "8 transformed views · averaged logits" },
+      { value: "E2E", label: "Drone-to-GIS workflow", sub: "imagery → prediction → road polygons" }
     ],
     gallery: [
-      { before: img("road_raw_image"), after: img("road_thar_probabilities"), afterLabel: "Thar Road Probability", caption: "Raw orthomosaic → Thar road probabilities" },
-      { before: img("road_raw_image"), after: img("road_cc_roads"), afterLabel: "CC Road Head", caption: "CC (concrete) road head" },
-      { before: img("road_raw_image"), after: img("road_mud_roads"), afterLabel: "Mud/Gravel Road Head", caption: "Mud / gravel road head" },
-      { before: img("road_raw_image"), after: img("road_extraction"), afterLabel: "Final Extraction", caption: "Final multi-class extraction" },
+      { before: img("road_raw_image"), after: img("road_prediction_classes"), afterLabel: "Road Class Prediction", caption: "Raw drone orthomosaic → multi-class road prediction" },
+      { before: img("road_prediction_classes"), after: img("road_final_classes"), afterLabel: "Extracted Road Classes", caption: "Road prediction → refined Thar, cement-concrete and mud-road classes" },
+      { before: img("road_raw_image"), after: img("road_final_classes"), afterLabel: "Final Road Classification", caption: "Raw drone orthomosaic → final multi-class road classification" }
     ],
-    stack: ["PyTorch", "UNet++", "SE-ResNet50", "TTA", "GeoPandas", "PostGIS", "Django"],
+    stack: ["PyTorch", "UNet++", "SE-ResNet50", "Segmentation Models PyTorch", "Albumentations", "Rasterio", "GeoPandas", "Shapely", "GDAL / OGR", "OpenCV", "NumPy", "scikit-learn"]
   },
   {
     slug: "aqua-bodies-detection",
     featured: false,
-    category: "Satellite · Remote sensing",
+    category: "Geospatial AI · Multispectral Segmentation",
     title: "Aqua Bodies Detection",
-    subtitle: "State-scale aquaculture pond mapping from Planet imagery",
-    role: "ML Engineer · R&D",
+    subtitle:
+      "Dual-output UNet++ for statewide aquaculture pond mapping from Planet multispectral imagery",
+    role: "ML Engineer · Geospatial AI",
     org: "AWARE",
     period: "2025",
     cover: img("aqua_final_predictions"),
     accent: "#38BDF8",
     summary:
-      "Researched which Planet multispectral bands separate water from land, built a dual-head UNet++ that outputs one polygon per bund-separated pond, and ran inference across an entire state.",
+      "An end-to-end Geospatial AI workflow for statewide aquaculture pond mapping using six-band Planet multispectral imagery. The system uses a dual-output UNet++ model to detect pond interiors and bund boundaries, separate adjacent ponds, and generate individual GIS-ready pond polygons.",
     problem:
-      "Aquaculture ponds change season to season and are packed edge to edge. A statewide inventory needs per-pond polygons, wet or dry, from 6-band satellite imagery — not a single merged water mask.",
+      "Aquaculture ponds are often densely packed and separated by narrow bunds, while their water extent changes with seasonal conditions. A single water mask can merge neighboring ponds, making it difficult to build a reliable statewide inventory. The workflow therefore detects both pond interiors and bund boundaries to produce individual pond polygons.",
     approach: [
-      "Analysed Planet data and its bands to understand which spectral signatures identify aqua bodies.",
-      "Trained a UNet++ (SE-ResNet50, SCSE) on 6-channel tiles with a pond-interior head and a bund/boundary head.",
-      "Iterated through trial-and-error experiments until the model reached ~88% accuracy.",
-      "Ran predictions for the entire state and exported GIS-ready shapefiles.",
+      "Analysed six Planet multispectral bands—Blue, Green I, Green, Red, Red Edge, and NIR—to identify spectral information useful for separating aquaculture ponds from surrounding land.",
+      "Built a training dataset from Planet mosaics and pond annotations, using overlapping 512 × 512 tiles with per-tile normalization and separate masks for pond interiors and bund boundaries.",
+      "Implemented a dual-output UNet++ with an ImageNet-pretrained SE-ResNet50 encoder to jointly predict aquaculture interiors and bund boundaries.",
+      "Iterated on model architecture, training parameters, and preprocessing until reaching approximately 88% accuracy, with IoU 0.85 and Dice 0.92.",
+      "Used overlapping sliding-window inference with Hann-weighted blending, then combined interior and boundary predictions to separate adjacent ponds and generate individual GIS polygons.",
+      "Ran inference across the full state and exported the detected aquaculture ponds as GIS-ready shapefiles for downstream spatial analysis."
     ],
-    owned: ["Band analysis", "Model development", "Accuracy iteration", "Statewide inference"],
+    owned: [
+      "Planet multispectral band analysis",
+      "Training-data preparation and pond/bund mask generation",
+      "Dual-output UNet++ model development",
+      "Model experimentation and accuracy iteration",
+      "Large-scale statewide inference",
+      "Bund-guided pond separation and GIS polygon generation"
+    ],
     outcomes: [
-      { value: "88%", label: "Accuracy", sub: "IoU 0.85 · Dice 0.92" },
-      { value: "6", label: "Spectral bands", sub: "Planet multispectral" },
-      { value: "State", label: "Inference extent", sub: "full coverage" },
+      {
+        value: "88%",
+        label: "Accuracy",
+        sub: "IoU 0.85 · Dice 0.92"
+      },
+      {
+        value: "6",
+        label: "Spectral bands",
+        sub: "Blue · Green · Red · Red Edge · NIR"
+      },
+      {
+        value: "2",
+        label: "Segmentation outputs",
+        sub: "pond interior · bund boundary"
+      },
+      {
+        value: "State",
+        label: "Inference extent",
+        sub: "full statewide coverage"
+      }
     ],
     gallery: [
-      { before: img("aqua_raw_image"), after: img("aqua_interior_predictions"), afterLabel: "Pond Interior", caption: "Planet imagery → pond interiors" },
-      { before: img("aqua_raw_image"), after: img("aqua_boudnary_predictions"), afterLabel: "Bund Boundary", caption: "Planet imagery → bund boundaries" },
-      { before: img("aqua_raw_image"), after: img("aqua_final_predictions"), afterLabel: "Final Polygons", caption: "Final per-pond polygons" },
+      {
+        before: img("aqua_raw_image"),
+        after: img("aqua_interior_predictions"),
+        afterLabel: "Pond Interior",
+        caption: "Planet multispectral imagery → aquaculture pond interiors"
+      },
+      {
+        before: img("aqua_raw_image"),
+        after: img("aqua_boudnary_predictions"),
+        afterLabel: "Bund Boundary",
+        caption: "Planet multispectral imagery → pond bund boundaries"
+      },
+      {
+        before: img("aqua_raw_image"),
+        after: img("aqua_final_predictions"),
+        afterLabel: "Final Pond Polygons",
+        caption: "Interior + boundary predictions → individual aquaculture pond polygons"
+      }
     ],
-    stack: ["PyTorch", "UNet++", "Planet imagery", "Rasterio", "GeoPandas"],
+    stack: [ "PyTorch", "UNet++", "SE-ResNet50", "Planet Multispectral", "Rasterio", "GeoPandas", "Shapely", "OpenCV", "SciPy"]
   },
   {
     slug: "built-up-area-detection",
     featured: false,
-    category: "Satellite · Remote sensing",
+    category: "Geospatial AI · Multispectral Segmentation",
     title: "Built-up Area Detection",
-    subtitle: "Impervious-surface mapping across a state",
+    subtitle: "Statewide built-up and impervious-surface mapping from Planet multispectral imagery",
     role: "ML Engineer · R&D",
     org: "AWARE",
     period: "2025",
     cover: img("built_up_areas_extraced_polygons"),
     accent: "#FB923C",
-    summary:
-      "Built-up / impervious surface segmentation on Planet imagery producing probability GeoTIFFs and polygon shapefiles for land-use and urban-extent analysis, with statewide predictions.",
-    problem:
-      "Urban-extent planning needs a consistent, repeatable built-up layer across the whole state. Visual interpretation is inconsistent and cannot be refreshed each season.",
+    summary: "An end-to-end Geospatial AI workflow for statewide built-up and impervious-surface mapping using six-band Planet multispectral imagery. The system uses a UNet++ segmentation model to generate probability rasters and GIS-ready polygons for land-use and urban-extent analysis.",
+    problem: "Statewide urban-extent mapping requires a consistent and repeatable built-up layer across large regions. Manual visual interpretation is time-consuming and difficult to refresh, while built-up surfaces can be confused with roads, exposed soil, and other land-cover types.",
     approach: [
-      "Analysed Planet bands for built-up signatures and prepared 6-channel training tiles.",
-      "Trained a UNet++ (SE-ResNet50, SCSE) with AMP/TF32 and d4 test-time augmentation.",
-      "Iterated until the model reached ~90% accuracy; exported probability rasters and cleaned polygons.",
-      "Ran predictions for the entire state.",
+      "Analysed Planet multispectral bands to identify spectral information useful for separating built-up surfaces from surrounding land and prepared six-channel training tiles.",
+      "Built and trained a UNet++ model with an ImageNet-pretrained SE-ResNet50 encoder and SCSE attention for built-up-area segmentation.",
+      "Used weighted BCE + Dice loss, data augmentation, and transfer-learning strategies to improve segmentation performance.",
+      "Implemented sliding-window inference with overlapping tiles, Hann-weighted blending, and D4 test-time augmentation for large Planet mosaics.",
+      "Generated continuous built-up probability GeoTIFFs, thresholded the predictions, and converted the detected regions into cleaned GIS polygons.",
+      "Ran the complete inference workflow across the state for large-scale built-up and impervious-surface mapping."
     ],
-    owned: ["Band analysis", "Model development", "Accuracy iteration", "Statewide inference"],
+    owned: [
+      "Planet multispectral band analysis",
+      "Six-channel training-data preparation",
+      "UNet++ model development and experimentation",
+      "Model accuracy iteration and optimization",
+      "Large-scale statewide inference",
+      "Probability-raster generation and GIS polygon extraction"
+    ],
     outcomes: [
       { value: "90%", label: "Accuracy", sub: "IoU 0.82 · Dice 0.90" },
-      { value: "≤3 min", label: "Per 10k×10k mosaic", sub: "GPU, TTA d4" },
-      { value: "State", label: "Inference extent", sub: "full coverage" },
+      { value: "≤3 min", label: "Per 10k × 10k mosaic", sub: "GPU inference · D4 TTA" },
+      { value: "6", label: "Spectral bands", sub: "Planet multispectral imagery" },
+      { value: "State", label: "Inference extent", sub: "full statewide coverage" }
     ],
     gallery: [
-      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_predictions"), afterLabel: "Built-up Probability", caption: "Planet imagery → built-up probability" },
-      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_extraced_polygons"), afterLabel: "Final Polygons", caption: "Extracted built-up polygons" },
+      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_predictions"), afterLabel: "Built-up Probability", caption: "Planet multispectral imagery → built-up probability prediction" },
+      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_extraced_polygons"), afterLabel: "Final Built-up Polygons", caption: "Built-up prediction → extracted GIS polygons" }
     ],
-    stack: ["PyTorch", "UNet++", "Planet imagery", "Rasterio", "GeoPandas"],
+    stack: [ "PyTorch", "UNet++", "SE-ResNet50", "Planet Multispectral", "Rasterio", "GeoPandas", "Shapely"]
   },
   {
     slug: "geoportal-spatial-decision-platform",
@@ -379,6 +487,157 @@ export const caseStudies = [
       "The platform that serves land allotment, monetisation, acquisition, layouts and estate data for a capital city — plus the module that lets non-developers create whole dashboards from a shapefile.",
     problem:
       "A capital-city authority manages land across dozens of departments and datasets. Every new dashboard used to need a backend developer, data took hours to onboard, and citizens had no self-service view of their plots.",
+    modulesTitle: "One platform, six connected systems.",
+    modulesIntro:
+      "Use the module index to move between the platform's major capabilities. Each chapter keeps its purpose, workflow, impact, technical scope, gallery and resources together.",
+    modules: [
+      {
+        id: "geoportal-core",
+        category: "Platform foundation",
+        title: "GeoPortal Core",
+        subtitle: "Shared spatial services for land, infrastructure and city-management workflows.",
+        scope: "~80% backend",
+        summary:
+          "The common backend that serves spatial data and business rules across **21 departmental modules**, replacing isolated workflows with a consistent platform foundation.",
+        facts: [
+          { value: "21", label: "Platform modules", sub: "shared APIs and spatial services" },
+          { value: "15", label: "Modules owned end-to-end", sub: "backend implementation" },
+          { value: "~80%", label: "Core backend contribution", sub: "APIs and business logic" },
+        ],
+        workflow: ["Department data", "Shared spatial APIs", "Business rules", "Portal views"],
+        details: [
+          "Implemented APIs and business logic for **Theme City, Infra Zone, Layouts, LPS Summary, Estate Management and Housing**.",
+          "Delivered around **60% of the Land Acquisition module** and the majority of the GeoPortal core.",
+          "Standardised how departmental applications query, filter and present spatial records.",
+          "Kept the platform extensible so new land and city workflows could reuse the same foundation.",
+        ],
+        tags: ["Django", "PostGIS", "GeoServer", "React"],
+      },
+      {
+        id: "view-creation",
+        category: "Dashboard automation",
+        title: "View-Creation Module",
+        subtitle: "A configuration-driven builder that turns spatial data into publishable dashboards.",
+        scope: "Zero-code delivery",
+        summary:
+          "Non-developers can upload one or two shapefiles—or select existing tables—configure the information hierarchy and publish a complete spatial dashboard with **zero new backend code**.",
+        facts: [
+          { value: "~10 min", label: "Shapefile onboarding", sub: "previously 5–6 hours" },
+          { value: "N-level", label: "Group-by configuration", sub: "configured, not hard-coded" },
+          { value: "0", label: "Backend changes per view", sub: "after configuration" },
+        ],
+        workflow: ["Upload or select", "Map columns", "Configure hierarchy", "Publish dashboard"],
+        details: [
+          "Accepts **one or two shapefiles** or existing database tables as the source.",
+          "Lets teams configure N-level group-by aggregations and choose the columns exposed in the UI.",
+          "Publishes the spatial layer to **GeoServer** and supplies the configuration required by the dashboard.",
+          "Now powers Sector Zone, LPS Village and Land Acquisition views without module-specific backend work.",
+        ],
+        tags: ["Django", "PostgreSQL", "PostGIS", "GeoServer", "Config-driven UI"],
+      },
+      {
+        id: "metadata-management",
+        category: "Data lifecycle",
+        title: "Metadata Management",
+        subtitle: "Versioned ingestion and management for the platform's spatial datasets.",
+        scope: "Data operations",
+        summary:
+          "A controlled entry point for spatial data: upload shapefiles, ingest tables, manage metadata and safely return to a previous dataset version when a release needs to be reversed.",
+        facts: [
+          { value: "60%", label: "Faster spatial queries", sub: "after Cassandra → PostGIS" },
+          { value: "Versioned", label: "Shapefile updates", sub: "previous version recoverable" },
+          { value: "1", label: "Source of truth", sub: "PostgreSQL + PostGIS" },
+        ],
+        workflow: ["Upload dataset", "Validate metadata", "Ingest & version", "Publish / revert"],
+        details: [
+          "Migrated the platform data layer from **Cassandra to PostgreSQL + PostGIS**.",
+          "Built shapefile upload and table-ingestion workflows around consistent metadata.",
+          "Added **revert-to-previous-version** support for safer spatial-data updates.",
+          "Connected ingestion with GeoServer publishing and Elasticsearch indexing.",
+        ],
+        tags: ["PostgreSQL", "PostGIS", "GeoPandas", "GeoServer", "Django"],
+        // Add screenshots to public/images/work, then enable entries like these:
+        // { image: img("metadata_upload"), alt: "Metadata upload screen", caption: "Upload and validate a spatial dataset" }
+        // { before: img("metadata_previous"), after: img("metadata_current"), beforeLabel: "Previous", afterLabel: "Current", caption: "Dataset version comparison" }
+        gallery: [
+                { image: img("building_polygon_height_using_dem"), alt: "Building footprints with DEM-derived height attributes", caption: "Building footprints → DEM-derived building height calculation" },
+
+        ],
+        
+        // External project documentation, demos or repositories can be added here:
+        // { label: "Metadata guide", href: "https://example.com/metadata-guide" }
+        links: [],
+      },
+      {
+        id: "portal-search",
+        category: "Search & discovery",
+        title: "Elasticsearch Search",
+        subtitle: "Fast, column-aware discovery across portal datasets.",
+        scope: "Built from scratch",
+        summary:
+          "Designed and implemented the platform search layer from the ground up, so users can find records across large spatial datasets without knowing which departmental table owns the data.",
+        facts: [
+          { value: "E2E", label: "Search ownership", sub: "R&D through production APIs" },
+          { value: "Column", label: "Index granularity", sub: "selective index creation" },
+          { value: "Cross", label: "Dataset discovery", sub: "one portal search experience" },
+        ],
+        workflow: ["Choose columns", "Build indices", "Query search API", "Locate on portal"],
+        details: [
+          "Researched, installed and configured **Elasticsearch** for the platform.",
+          "Created APIs that build indices for selected dataset columns.",
+          "Built the search APIs consumed by the portal's discovery experience.",
+          "Integrated indexing into the metadata-management workflow so data stays discoverable after ingestion.",
+        ],
+        tags: ["Elasticsearch", "Django REST", "PostgreSQL", "Search APIs"],
+      },
+      {
+        id: "lps-user-portal",
+        category: "Citizen experience",
+        title: "LPS User Portal",
+        subtitle: "Secure self-service access to residential and commercial returnable plots.",
+        scope: "Citizen-facing",
+        summary:
+          "A mobile-first portal where land-pooling users authenticate by OTP, review their own residential and commercial plots, and locate a plot directly on the map without exposing another farmer's identity.",
+        facts: [
+          { value: "OTP", label: "User authentication", sub: "mobile-number based" },
+          { value: "2", label: "Plot categories", sub: "residential + commercial" },
+          { value: "PII", label: "Privacy-aware access", sub: "non-owner names masked" },
+        ],
+        workflow: ["OTP sign-in", "Resolve ownership", "List user plots", "Locate on map"],
+        details: [
+          "Implemented mobile-OTP authentication and user-to-plot resolution.",
+          "Separated and presented each user's **residential and commercial** plots.",
+          "Added plot-code search with direct map location.",
+          "Masked farmer names whenever a plot does not belong to the signed-in user.",
+        ],
+        tags: ["Django", "OTP Authentication", "PostGIS", "React", "PII controls"],
+      },
+      {
+        id: "access-gis-operations",
+        category: "Governance & tooling",
+        title: "Access Control & GIS Operations",
+        subtitle: "Role-aware platform access with practical tools for internal spatial teams.",
+        scope: "Internal enablement",
+        summary:
+          "Department-level access control protects platform capabilities, while an internal GIS toolkit gives operations teams a focused way to inspect, repair and transform shapefiles outside the core portal.",
+        facts: [
+          { value: "RBAC", label: "Department access", sub: "Keycloak-backed roles" },
+          { value: "API", label: "Disaster-management controls", sub: "authorised endpoints" },
+          { value: "Self-serve", label: "GIS operations", sub: "Streamlit shapefile toolkit" },
+        ],
+        workflow: ["Authenticate", "Resolve role", "Authorise capability", "Operate securely"],
+        details: [
+          "Applied **Keycloak RBAC** to department-level portal access.",
+          "Authorised Disaster Management APIs and tightened access to protected workflows.",
+          "Built a Streamlit toolkit for common internal shapefile operations.",
+          "Kept operational tooling separate from citizen and departmental user journeys.",
+        ],
+        tags: ["Keycloak", "RBAC", "Streamlit", "GeoPandas", "Security"],
+        links: [
+          { label: "Open shapefile toolkit", href: "https://shapefile-toolkit.streamlit.app/" },
+        ],
+      },
+    ],
     approach: [
       "Implemented the majority of APIs and business logic across 21 modules: Geo-Portal core (80%), Theme City, Land Acquisition (60%), Infra Zone, Layouts, LPS Summary, Estate Management, Housing, Disaster-management API authorisation.",
       "Migrated the data layer from Cassandra to PostgreSQL + PostGIS, creating a single source of truth and improving geospatial queries by ~60%.",
