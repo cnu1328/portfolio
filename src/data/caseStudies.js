@@ -365,7 +365,7 @@ export const caseStudies = [
     role: "ML Engineer · Geospatial AI",
     org: "AWARE",
     period: "2025",
-    cover: img("aqua_final_predictions"),
+    cover: img("aqua_bodies_final_polygons"),
     accent: "#38BDF8",
     summary:
       "An end-to-end Geospatial AI workflow for statewide aquaculture pond mapping using six-band Planet multispectral imagery. The system uses a dual-output UNet++ model to detect pond interiors and bund boundaries, separate adjacent ponds, and generate individual GIS-ready pond polygons.",
@@ -411,20 +411,20 @@ export const caseStudies = [
     ],
     gallery: [
       {
-        before: img("aqua_raw_image"),
-        after: img("aqua_interior_predictions"),
+        before: img("aqua_bodies_raw"),
+        after: img("aqua_bodies_prediction"),
         afterLabel: "Pond Interior",
         caption: "Planet multispectral imagery → aquaculture pond interiors"
       },
       {
-        before: img("aqua_raw_image"),
-        after: img("aqua_boudnary_predictions"),
+        before: img("aqua_bodies_raw"),
+        after: img("aqua_bodies_boundary"),
         afterLabel: "Bund Boundary",
         caption: "Planet multispectral imagery → pond bund boundaries"
       },
       {
-        before: img("aqua_raw_image"),
-        after: img("aqua_final_predictions"),
+        before: img("aqua_bodies_raw"),
+        after: img("aqua_bodies_final_polygons"),
         afterLabel: "Final Pond Polygons",
         caption: "Interior + boundary predictions → individual aquaculture pond polygons"
       }
@@ -467,8 +467,8 @@ export const caseStudies = [
       { value: "State", label: "Inference extent", sub: "full statewide coverage" }
     ],
     gallery: [
-      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_predictions"), afterLabel: "Built-up Probability", caption: "Planet multispectral imagery → built-up probability prediction" },
-      { before: img("built_up_areas_raw_image"), after: img("built_up_areas_extraced_polygons"), afterLabel: "Final Built-up Polygons", caption: "Built-up prediction → extracted GIS polygons" }
+      { before: img("built_up_area_raw"), after: img("built_up_area_prediction"), afterLabel: "Built-up Probability", caption: "Planet multispectral imagery → built-up probability prediction" },
+      { before: img("built_up_area_raw"), after: img("built_up_area_polygons"), afterLabel: "Final Built-up Polygons", caption: "Built-up prediction → extracted GIS polygons" }
     ],
     stack: [ "PyTorch", "UNet++", "SE-ResNet50", "Planet Multispectral", "Rasterio", "GeoPandas", "Shapely"]
   },
