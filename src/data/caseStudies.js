@@ -440,7 +440,7 @@ export const caseStudies = [
     role: "ML Engineer · R&D",
     org: "AWARE",
     period: "2025",
-    cover: img("built_up_areas_extraced_polygons"),
+    cover: img("built_up_area_polygons"),
     accent: "#FB923C",
     summary: "An end-to-end Geospatial AI workflow for statewide built-up and impervious-surface mapping using six-band Planet multispectral imagery. The system uses a UNet++ segmentation model to generate probability rasters and GIS-ready polygons for land-use and urban-extent analysis.",
     problem: "Statewide urban-extent mapping requires a consistent and repeatable built-up layer across large regions. Manual visual interpretation is time-consuming and difficult to refresh, while built-up surfaces can be confused with roads, exposed soil, and other land-cover types.",
