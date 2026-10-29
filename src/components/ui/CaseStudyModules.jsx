@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { LuArrowLeft, LuArrowRight, LuExternalLink, LuMaximize2 } from "react-icons/lu";
 import CompareSlider from "./CompareSlider";
 import GalleryLightbox from "./GalleryLightbox";
@@ -84,6 +85,24 @@ function ModuleDetail({ module, index, total, accent, onPrevious, onNext }) {
           <p className="max-w-3xl text-base leading-relaxed sm:text-lg">
             <RichText text={module.summary} />
           </p>
+
+          {module.projects?.length > 0 && (
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Explore the projects</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {module.projects.map((project) => (
+                  <article key={project.slug} className="rounded-2xl border border-line/10 bg-surface-2/55 p-4">
+                    <h4 className="text-base font-semibold">
+                      <Link to={`/work/${project.slug}`} className="inline-flex items-center gap-2 transition-colors hover:text-accent">
+                        {project.title} <LuArrowRight size={15} aria-hidden="true" />
+                      </Link>
+                    </h4>
+                    <p className="mt-2 text-sm leading-relaxed text-muted"><RichText text={project.description} /></p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
 
           {module.facts?.length > 0 && (
             <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -196,6 +215,7 @@ function ModuleDetail({ module, index, total, accent, onPrevious, onNext }) {
 
 export default function CaseStudyModules({ modules, accent = "#2DD4BF", title, intro }) {
   const [activeId, setActiveId] = useState(modules[0]?.id);
+  const [showModuleIndex, setShowModuleIndex] = useState(true);
   const activeIndex = useMemo(() => Math.max(0, modules.findIndex((module) => module.id === activeId)), [activeId, modules]);
   const activeModule = modules[activeIndex];
 
@@ -216,13 +236,29 @@ export default function CaseStudyModules({ modules, accent = "#2DD4BF", title, i
             </h2>
             {intro && <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">{intro}</p>}
           </div>
-          <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-            <span className="text-ink">{pad(modules.length)}</span> modules documented
-          </p>
+          <div className="flex shrink-0 flex-wrap items-center gap-3">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+              <span className="text-ink">{pad(modules.length)}</span> modules documented
+            </p>
+            <button
+              type="button"
+              aria-controls="case-study-module-index"
+              aria-expanded={showModuleIndex}
+              onClick={() => setShowModuleIndex((visible) => !visible)}
+              className="rounded-full border border-line/20 bg-surface/50 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-line/40 hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              {showModuleIndex ? "Hide modules" : "Show modules"}
+            </button>
+          </div>
         </div>
 
-        <div className="mt-7 grid items-start gap-5 lg:grid-cols-[17rem_minmax(0,1fr)]">
-          <nav aria-label="Case study modules" className="grid gap-2 sm:grid-cols-2 lg:sticky lg:top-24 lg:grid-cols-1">
+        <div className={cx("mt-7 grid items-start gap-5", showModuleIndex ? "lg:grid-cols-[17rem_minmax(0,1fr)]" : "lg:grid-cols-1")}>
+          <nav
+            id="case-study-module-index"
+            aria-label="Case study modules"
+            className="grid gap-2 sm:grid-cols-2 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:grid-cols-1 lg:overflow-y-auto lg:pr-1"
+            style={showModuleIndex ? undefined : { display: "none" }}
+          >
             {modules.map((module, index) => {
               const active = module.id === activeModule.id;
               return (
